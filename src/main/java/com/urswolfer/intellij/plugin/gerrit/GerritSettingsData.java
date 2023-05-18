@@ -1,10 +1,6 @@
 package com.urswolfer.intellij.plugin.gerrit;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.ide.passwordSafe.PasswordSafeException;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.urswolfer.intellij.plugin.gerrit.ui.ShowProjectColumn;
 import org.jdom.Element;
@@ -12,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GerritSettingsData {
+    public static final String NAME = "name";
+
     private static final String LOGIN = "Login";
     private static final String HOST = "Host";
     private static final String AUTOMATIC_REFRESH = "AutomaticRefresh";
@@ -37,7 +35,6 @@ public class GerritSettingsData {
     private boolean showTopicColumn = false;
     private ShowProjectColumn showProjectColumn = ShowProjectColumn.AUTO;
     private String cloneBaseUrl = "";
-    private Optional<String> preloadedPassword;
 
     private Logger logger;
 
@@ -191,8 +188,12 @@ public class GerritSettingsData {
         return Strings.isNullOrEmpty(cloneBaseUrl) ? host : cloneBaseUrl;
     }
 
-    public Element getAsElement(String elementName){
-        final Element element = new Element(elementName);
+    public void setLog(Logger log) {
+        this.logger = log;
+    }
+
+    public Element fillElement(Element element, String elementName){
+        element.setAttribute(NAME, elementName);
         element.setAttribute(LOGIN, (getLogin() != null ? getLogin() : ""));
         element.setAttribute(HOST, (getHost() != null ? getHost() : ""));
         element.setAttribute(LIST_ALL_CHANGES, Boolean.toString(getListAllChanges()));
